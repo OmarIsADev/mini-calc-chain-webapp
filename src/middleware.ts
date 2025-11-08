@@ -4,6 +4,8 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
+  const requestHeaders = new Headers(request.headers);
+
   const url = request.nextUrl.clone();
 
   if (
@@ -22,11 +24,20 @@ export async function middleware(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-      await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+      const { payload } = (await jwtVerify(
+        token,
+        new TextEncoder().encode(JWT_SECRET)
+      )) as { payload: { _id: string } };
 
       console.log("token verified");
 
-      return NextResponse.next();
+      requestHeaders.set("_id", payload._id);
+
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
     } catch (error) {
       console.log(error);
 
