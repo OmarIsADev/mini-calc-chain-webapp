@@ -43,7 +43,7 @@ export default function Form() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-center text-2xl">
+        <CardTitle className="text-center text-2xl font-mono font-medium">
           Start a new chain
         </CardTitle>
       </CardHeader>

@@ -1,22 +1,34 @@
 import type { Types } from "mongoose";
 import { type NextRequest, NextResponse } from "next/server";
 import { Chain, Operation } from "@/models/Chain";
+import connectMongoDB from "@/lib/db";
 
 export async function POST(req: NextRequest) {
+  await connectMongoDB();
   const _id = req.headers.get("_id");
   const formData = await req.formData();
 
-  const operation = formData.get("operation");
+  const op = formData.get("operation") as string;
   const chainId = formData.get("chainId");
   const parentOperationId = formData.get("parentOperationId");
 
   console.log(parentOperationId);
 
-  if (!operation)
+  if (!op)
     return NextResponse.json(
       { error: "Operation is required" },
       { status: 400 }
     );
+
+  const operationArray = op.split("").filter((l) => l !== " ");
+
+  if (
+    !["+", "-", "*", "/"].includes(operationArray[0]) ||
+    (operationArray[1] as string).search(/[0-9]/) !== -1
+  )
+    return NextResponse.json({ error: "Invalid operation" }, { status: 400 });
+
+  const operation = operationArray.join(" ");
 
   const newOperation = await Operation.create({
     author: _id,
@@ -50,6 +62,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  await connectMongoDB();
   const _id = req.headers.get("_id");
 
   const searchParams = req.nextUrl.searchParams;

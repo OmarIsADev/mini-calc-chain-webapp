@@ -10,6 +10,7 @@ type ChainsState = {
     parentOperationId: string,
     chainId: string
   ) => void;
+  removeOperation: (operationId: string, chainId: string) => void;
 };
 
 const findAndAppendOperation = (
@@ -42,6 +43,32 @@ const findAndAppendOperation = (
 
     return op;
   });
+};
+
+const findAndRemoveOperation = (
+  operations: IPopulatedOperation[],
+  targetOperationId: string
+): IPopulatedOperation[] => {
+  const filteredOps = operations.filter(
+    (op) => op._id.toString() !== targetOperationId
+  );
+
+  if (filteredOps.length === operations.length) {
+    return operations.map((op) => {
+      if (op.operations && op.operations.length > 0) {
+        const updatedNestedOps = findAndRemoveOperation(
+          op.operations,
+          targetOperationId
+        );
+        if (updatedNestedOps !== op.operations) {
+          return { ...op, operations: updatedNestedOps };
+        }
+      }
+      return op;
+    });
+  }
+
+  return filteredOps;
 };
 
 const useChainsStore = create<ChainsState>((set) => ({
@@ -77,6 +104,27 @@ const useChainsStore = create<ChainsState>((set) => ({
             operations: updatedOperations,
           };
         }
+      });
+
+      return { chains: updatedChains };
+    });
+  },
+  removeOperation: (operationId, chainId) => {
+    set((state) => {
+      const updatedChains = state.chains.map((chain) => {
+        if (chain._id.toString() !== chainId) {
+          return chain;
+        }
+
+        const updatedOperations = findAndRemoveOperation(
+          chain.operations,
+          operationId
+        );
+
+        return {
+          ...chain,
+          operations: updatedOperations,
+        };
       });
 
       return { chains: updatedChains };

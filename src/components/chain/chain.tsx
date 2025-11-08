@@ -16,7 +16,7 @@ import {
 import useAuthStore from "@/store/auth";
 
 export default function Chain({ chain }: { chain: IPopulatedChain }) {
-  const { appendOperation } = useChainsStore();
+  const { appendOperation, removeOperation, removeChain } = useChainsStore();
   const { userData } = useAuthStore();
 
   const handleAddOperation = async (
@@ -62,14 +62,42 @@ export default function Chain({ chain }: { chain: IPopulatedChain }) {
     return false;
   };
 
+  const handleDelete = async () => {
+    const response = await fetch(`/api/protected/chain?id=${chain._id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    removeChain(chain._id);
+  };
+
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
           <p>{chain.author.username}</p>
-          <p className="text-gray-500">
-            {new Date(chain.createdAt).toLocaleDateString()}
-          </p>
+          <div className="flex flex-col gap-2 items-end justify-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="w-min cursor-pointer">
+                <LucideMoreHorizontal />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  variant="destructive"
+                  disabled={userData?._id !== chain.author._id}
+                  onClick={handleDelete}
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <p className="text-gray-500">
+              {new Date(chain.createdAt).toLocaleDateString()}
+            </p>
+          </div>
         </div>
         <p className="text-md">{chain.base}</p>
       </CardHeader>
@@ -80,8 +108,10 @@ export default function Chain({ chain }: { chain: IPopulatedChain }) {
             key={operation._id}
             lastValue={Number(chain.base)}
             operation={operation}
+            chainId={chain._id}
             parentOperationId={operation._id}
             handleAddOperation={handleAddOperation}
+            removeOperation={removeOperation}
           />
         ))}
 
@@ -104,16 +134,20 @@ const Opperation = ({
   lastValue,
   _id,
   parentOperationId = "",
+  chainId,
   handleAddOperation,
+  removeOperation,
 }: {
   operation: IPopulatedOperation;
   lastValue: number;
   _id?: string;
   parentOperationId?: string;
+  chainId: string;
   handleAddOperation: (
     e: React.FormEvent<HTMLFormElement>,
     parentOpperationId: string
   ) => Promise<boolean>;
+  removeOperation: (operationId: string, chainId: string) => void;
 }) => {
   const [isReplying, setIsReplying] = useState(false);
 
@@ -127,11 +161,11 @@ const Opperation = ({
       }
     );
 
-    if (response.ok) {
-      console.log("deleted");
-    } else {
-      console.log("not deleted");
+    if (!response.ok) {
+      return;
     }
+
+    removeOperation(operation._id, chainId);
   };
 
   return (
@@ -198,6 +232,8 @@ const Opperation = ({
           handleAddOperation={handleAddOperation}
           parentOperationId={op._id}
           _id={_id}
+          removeOperation={removeOperation}
+          chainId={chainId}
           lastValue={val}
           key={op._id}
           operation={op}
