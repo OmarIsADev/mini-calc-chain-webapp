@@ -24,11 +24,11 @@ export async function POST(req: NextRequest) {
 
   if (
     !["+", "-", "*", "/"].includes(operationArray[0]) ||
-    (operationArray[1] as string).search(/[0-9]/) !== -1
+    (operationArray[1] as string).search(/[0-9]/) === -1
   )
     return NextResponse.json({ error: "Invalid operation" }, { status: 400 });
 
-  const operation = operationArray.join(" ");
+  const operation = operationArray.join("");
 
   const newOperation = await Operation.create({
     author: _id,

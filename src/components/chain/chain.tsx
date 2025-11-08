@@ -151,7 +151,7 @@ const Opperation = ({
 }) => {
   const [isReplying, setIsReplying] = useState(false);
 
-  const val = evaluate(lastValue + operation.base);
+  const val = evaluate(`${lastValue}${operation.base}`);
 
   const handleDelete = async () => {
     const response = await fetch(
