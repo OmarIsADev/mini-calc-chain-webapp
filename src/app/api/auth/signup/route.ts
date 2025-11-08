@@ -1,9 +1,9 @@
-import { serialize } from "cookie";
-import jwt from "jsonwebtoken";
-import { type NextRequest, NextResponse } from "next/server";
 import connectMongoDB from "@/lib/db";
 import { User } from "@/models/User";
 import { hash } from "bcrypt";
+import { serialize } from "cookie";
+import jwt from "jsonwebtoken";
+import { type NextRequest, NextResponse } from "next/server";
 
 const saltRounds = 10;
 
@@ -21,13 +21,19 @@ export async function POST(req: NextRequest) {
   const password = formData.get("password") as string;
 
   if (username.length < 3 || password.length < 10) {
-    return new Response("username or password are too short", { status: 400 });
+    return NextResponse.json(
+      { error: "username or password are too short" },
+      { status: 400 }
+    );
   }
 
   const user = await User.findOne({ username });
 
   if (user) {
-    return new Response("username already exists", { status: 400 });
+    return NextResponse.json(
+      { error: "username already exists" },
+      { status: 400 }
+    );
   }
 
   const hashedPassword = await hash(password, saltRounds);
