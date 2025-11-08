@@ -1,22 +1,37 @@
 "use client";
 
 import useAuthStore from "@/store/auth";
+import useChainsStore from "@/store/chains";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Field, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import Link from "next/link";
 
 export default function Form() {
   const { isLoggedIn } = useAuthStore();
+  const { addChain } = useChainsStore();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("base", e.currentTarget.base.value);
+
+    const response = await fetch("/api/protected/chain", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      addChain(await response.json());
+    }
   };
 
   if (!isLoggedIn) {
     return (
-      <div className="flex flex-col gap-4 text-center max-w-md mx-auto py-10">
+      <div className="flex flex-col gap-4 text-center w-full mx-auto py-10">
         <p>Login to create a new chain or interact with an existing one.</p>
         <Button asChild variant="link">
           <Link href="/login">Login</Link>
@@ -26,7 +41,7 @@ export default function Form() {
   }
 
   return (
-    <Card className="max-w-md mx-auto">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-center text-2xl">
           Start a new chain

@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import useAuthStore from "@/store/auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginForm({

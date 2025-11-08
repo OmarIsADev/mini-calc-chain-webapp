@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import useAuthStore from "@/store/auth";
 import { Button } from "../ui/button";
 import {
   NavigationMenu,
@@ -7,13 +8,12 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "../ui/navigation-menu";
-import useAuthStore from "@/store/auth";
 
 export default function Navbar() {
   const { isLoggedIn, logout } = useAuthStore();
 
   return (
-    <NavigationMenu className="mx-auto max-w-6xl w-screen items-center justify-between px-8 py-2">
+    <NavigationMenu className="mx-auto max-w-6xl w-full items-center justify-between px-8 py-2">
       <NavigationMenuList>
         <NavigationMenuItem className="font-bold text-2xl">
           <Link href="/">Chain.io</Link>
