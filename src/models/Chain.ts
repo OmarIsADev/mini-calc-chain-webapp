@@ -7,11 +7,12 @@ export interface IOperation extends Document {
   createdAt: Date;
   updatedAt: Date;
   base: `${"+" | "-" | "*" | "/"} ${number}`;
-  operations: Types.ObjectId[];
+  operations: Types.ObjectId[] | IOperation[];
 }
 
 export interface IPopulatedOperation
-  extends Omit<IOperation, "author" | "operations"> {
+  extends Omit<IOperation, "author" | "operations" | "_id"> {
+  _id: string;
   author: IPopulatedUser;
   operations: IPopulatedOperation[];
 }
@@ -25,7 +26,9 @@ export interface IChain extends Document {
   operations: Types.ObjectId[] | IOperation[];
 }
 
-export interface IPopulatedChain extends Omit<IChain, "author" | "operations"> {
+export interface IPopulatedChain
+  extends Omit<IChain, "author" | "operations" | "_id"> {
+  _id: string;
   author: IPopulatedUser;
   operations: IPopulatedOperation[];
 }
@@ -62,8 +65,9 @@ const chainSchema: Schema<IChain> = new Schema<IChain>(
   { timestamps: true }
 );
 
-export const Chain = mongoose.model<IChain>("Chain", chainSchema);
-export const Operation = mongoose.model<IOperation>(
-  "Operation",
-  operationSchema
-);
+export const Chain =
+  (mongoose.models.Chain as mongoose.Model<IChain>) ||
+  mongoose.model<IChain>("Chain", chainSchema);
+export const Operation =
+  (mongoose.models.Operation as mongoose.Model<IOperation>) ||
+  mongoose.model<IOperation>("Operation", operationSchema);

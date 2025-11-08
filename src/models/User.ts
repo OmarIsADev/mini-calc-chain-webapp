@@ -1,4 +1,11 @@
-import { type Document, model, Schema, type Types } from "mongoose";
+import {
+  type Document,
+  type Model,
+  model,
+  models,
+  Schema,
+  type Types,
+} from "mongoose";
 import type { IChain } from "./Chain";
 
 export interface IUser extends Document {
@@ -27,4 +34,6 @@ const userSchema: Schema<IUser> = new Schema<IUser>({
   chains: [{ type: Schema.Types.ObjectId, ref: "Chain" }],
 });
 
-export const User = model<IUser>("User", userSchema);
+// export const User = model<IUser>("User", userSchema);
+export const User =
+  (models.User as unknown as Model<IUser>) || model<IUser>("User", userSchema);
