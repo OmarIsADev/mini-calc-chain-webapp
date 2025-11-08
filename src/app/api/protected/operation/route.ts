@@ -48,3 +48,41 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(await newOperation.populate("author"));
 }
+
+export async function DELETE(req: NextRequest) {
+  const _id = req.headers.get("_id");
+
+  const searchParams = req.nextUrl.searchParams;
+  const operationId = searchParams.get("id");
+
+  const operation = await Operation.findById(operationId);
+
+  if (!operation)
+    return NextResponse.json({ error: "Operation not found" }, { status: 404 });
+
+  if (operation.author.toString() !== _id)
+    return NextResponse.json(
+      { error: "You are not authorized to delete this operation" },
+      { status: 403 }
+    );
+
+  if (operation.operations.length > 0)
+    return NextResponse.json(
+      { error: "This operation has child operations" },
+      { status: 400 }
+    );
+
+  await operation.deleteOne();
+
+  await Chain.updateMany(
+    { operations: operationId },
+    { $pull: { operations: operationId } }
+  );
+
+  await Operation.updateMany(
+    { operations: operationId },
+    { $pull: { operations: operationId } }
+  );
+
+  return NextResponse.json({ message: "Operation deleted" });
+}
