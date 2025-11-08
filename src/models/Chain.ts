@@ -5,6 +5,7 @@ export interface IOperation extends Document {
   _id: Types.ObjectId;
   author: Types.ObjectId;
   createdAt: Date;
+  updatedAt: Date;
   base: `${"+" | "-" | "*" | "/"} ${number}`;
   operations: Types.ObjectId[];
 }
@@ -19,6 +20,7 @@ export interface IChain extends Document {
   _id: Types.ObjectId;
   base: number;
   createdAt: Date;
+  updatedAt: Date;
   author: Types.ObjectId;
   operations: Types.ObjectId[] | IOperation[];
 }
@@ -28,39 +30,37 @@ export interface IPopulatedChain extends Omit<IChain, "author" | "operations"> {
   operations: IPopulatedOperation[];
 }
 
-const operationSchema: Schema<IOperation> = new Schema<IOperation>({
-  createdAt: {
-    type: Date,
-    default: Date.now,
+const operationSchema: Schema<IOperation> = new Schema<IOperation>(
+  {
+    author: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    base: {
+      type: String,
+      required: true,
+    },
+    operations: [{ type: Schema.Types.ObjectId, ref: "Operation" }],
   },
-  author: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
-  base: {
-    type: String,
-    required: true,
-  },
-  operations: [{ type: Schema.Types.ObjectId, ref: "Operation" }],
-});
+  { timestamps: true }
+);
 
-const chainSchema: Schema<IChain> = new Schema<IChain>({
-  createdAt: {
-    type: Date,
-    default: Date.now,
+const chainSchema: Schema<IChain> = new Schema<IChain>(
+  {
+    author: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    base: {
+      type: Number,
+      required: true,
+    },
+    operations: [{ type: Schema.Types.ObjectId, ref: "Operation" }],
   },
-  author: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
-  base: {
-    type: Number,
-    required: true,
-  },
-  operations: [{ type: Schema.Types.ObjectId, ref: "Operation" }],
-});
+  { timestamps: true }
+);
 
 export const Chain = mongoose.model<IChain>("Chain", chainSchema);
 export const Operation = mongoose.model<IOperation>(

@@ -5,6 +5,8 @@ export interface IUser extends Document {
   username: string;
   password: string;
   chains: Types.ObjectId[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IPopulatedUser extends Omit<IUser, "chains"> {
