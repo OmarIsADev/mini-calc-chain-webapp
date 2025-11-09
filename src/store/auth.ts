@@ -38,6 +38,8 @@ const useAuthStore = create<AuthState>((set) => ({
 
     set({ userData: null });
     set({ isLoggedIn: false });
+
+    window.location.reload();
   },
   fetchUser: async () => {
     const response = await fetch("/api/protected/me");
