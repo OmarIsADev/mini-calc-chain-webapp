@@ -8,7 +8,7 @@ type ChainsState = {
   appendOperation: (
     operation: IPopulatedOperation,
     parentOperationId: string,
-    chainId: string
+    chainId: string,
   ) => void;
   removeOperation: (operationId: string, chainId: string) => void;
 };
@@ -16,7 +16,7 @@ type ChainsState = {
 const findAndAppendOperation = (
   operations: IPopulatedOperation[],
   targetParentId: string,
-  newOperation: IPopulatedOperation
+  newOperation: IPopulatedOperation,
 ): IPopulatedOperation[] => {
   return operations.map((op) => {
     if (op._id.toString() === targetParentId) {
@@ -30,7 +30,7 @@ const findAndAppendOperation = (
       const updatedNestedOps = findAndAppendOperation(
         op.operations,
         targetParentId,
-        newOperation
+        newOperation,
       );
 
       if (updatedNestedOps !== op.operations) {
@@ -47,10 +47,10 @@ const findAndAppendOperation = (
 
 const findAndRemoveOperation = (
   operations: IPopulatedOperation[],
-  targetOperationId: string
+  targetOperationId: string,
 ): IPopulatedOperation[] => {
   const filteredOps = operations.filter(
-    (op) => op._id.toString() !== targetOperationId
+    (op) => op._id.toString() !== targetOperationId,
   );
 
   if (filteredOps.length === operations.length) {
@@ -58,7 +58,7 @@ const findAndRemoveOperation = (
       if (op.operations && op.operations.length > 0) {
         const updatedNestedOps = findAndRemoveOperation(
           op.operations,
-          targetOperationId
+          targetOperationId,
         );
         if (updatedNestedOps !== op.operations) {
           return { ...op, operations: updatedNestedOps };
@@ -96,7 +96,7 @@ const useChainsStore = create<ChainsState>((set) => ({
           const updatedOperations = findAndAppendOperation(
             chain.operations,
             parentOperationId,
-            newOperation
+            newOperation,
           );
 
           return {
@@ -118,7 +118,7 @@ const useChainsStore = create<ChainsState>((set) => ({
 
         const updatedOperations = findAndRemoveOperation(
           chain.operations,
-          operationId
+          operationId,
         );
 
         return {

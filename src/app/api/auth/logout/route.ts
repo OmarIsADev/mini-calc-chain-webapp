@@ -12,6 +12,6 @@ export async function GET() {
 
   return NextResponse.json(
     { message: "logged out" },
-    { status: 200, headers: { "Set-Cookie": serilized } }
+    { status: 200, headers: { "Set-Cookie": serilized } },
   );
 }

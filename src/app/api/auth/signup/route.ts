@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   if (username.length < 3 || password.length < 10) {
     return NextResponse.json(
       { error: "username or password are too short" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   if (user) {
     return NextResponse.json(
       { error: "username already exists" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -52,6 +52,6 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(
     { message: "Signup successful" },
-    { status: 201, headers: { "Set-Cookie": serilized } }
+    { status: 201, headers: { "Set-Cookie": serilized } },
   );
 }

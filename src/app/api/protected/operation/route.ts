@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   if (!op)
     return NextResponse.json(
       { error: "Operation is required" },
-      { status: 400 }
+      { status: 400 },
     );
 
   const operationArray = op.split("").filter((l) => l !== " ");
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     if (!parentOperation)
       return NextResponse.json(
         { error: "Parent operation not found" },
-        { status: 404 }
+        { status: 404 },
       );
 
     (parentOperation.operations as Types.ObjectId[]).push(newOperation._id);
@@ -76,25 +76,25 @@ export async function DELETE(req: NextRequest) {
   if (operation.author.toString() !== _id)
     return NextResponse.json(
       { error: "You are not authorized to delete this operation" },
-      { status: 403 }
+      { status: 403 },
     );
 
   if (operation.operations.length > 0)
     return NextResponse.json(
       { error: "This operation has child operations" },
-      { status: 400 }
+      { status: 400 },
     );
 
   await operation.deleteOne();
 
   await Chain.updateMany(
     { operations: operationId },
-    { $pull: { operations: operationId } }
+    { $pull: { operations: operationId } },
   );
 
   await Operation.updateMany(
     { operations: operationId },
-    { $pull: { operations: operationId } }
+    { $pull: { operations: operationId } },
   );
 
   return NextResponse.json({ message: "Operation deleted" });

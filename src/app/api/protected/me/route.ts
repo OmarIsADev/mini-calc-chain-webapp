@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     });
     return NextResponse.json(
       { error: "User not found" },
-      { status: 404, headers: { "Set-Cookie": serilized } }
+      { status: 404, headers: { "Set-Cookie": serilized } },
     );
   }
 

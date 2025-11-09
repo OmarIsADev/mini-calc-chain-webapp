@@ -4,7 +4,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+    "Please define the MONGODB_URI environment variable inside .env.local",
   );
 }
 
@@ -25,23 +25,22 @@ async function connectMongoDB() {
     });
 
     const db = mongoose.connection;
-    
-    // Connection events
-    
 
-    db.on('connected', () => {
-      console.log('✅ Mongoose connected successfully to MongoDB!');
+    // Connection events
+
+    db.on("connected", () => {
+      console.log("✅ Mongoose connected successfully to MongoDB!");
     });
-    
+
     // Error event
-    db.on('error', (err) => {
+    db.on("error", (err) => {
       console.error(`❌ Mongoose connection error: ${err}`);
       // Log the error and consider exiting the application if critical
     });
-    
+
     // Disconnection event
-    db.on('disconnected', () => {
-      console.log('⚠️ Mongoose disconnected from MongoDB.');
+    db.on("disconnected", () => {
+      console.log("⚠️ Mongoose disconnected from MongoDB.");
     });
   }
   cached.conn = await cached.promise;

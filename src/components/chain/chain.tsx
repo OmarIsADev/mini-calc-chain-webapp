@@ -21,7 +21,7 @@ export default function Chain({ chain }: { chain: IPopulatedChain }) {
 
   const handleAddOperation = async (
     e: React.FormEvent<HTMLFormElement>,
-    parentOperationId: string = ""
+    parentOperationId: string = "",
   ): Promise<boolean> => {
     e.preventDefault();
     e.stopPropagation();
@@ -145,7 +145,7 @@ const Opperation = ({
   chainId: string;
   handleAddOperation: (
     e: React.FormEvent<HTMLFormElement>,
-    parentOpperationId: string
+    parentOpperationId: string,
   ) => Promise<boolean>;
   removeOperation: (operationId: string, chainId: string) => void;
 }) => {
@@ -158,7 +158,7 @@ const Opperation = ({
       `/api/protected/operation?id=${operation._id}`,
       {
         method: "DELETE",
-      }
+      },
     );
 
     if (!response.ok) {

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   if (!username || !password)
     return NextResponse.json(
       { error: "Missing username or password" },
-      { status: 400 }
+      { status: 400 },
     );
 
   const user = await User.findOne({ username }).select("+password");
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   if (!user) {
     return NextResponse.json(
       { error: "Invalid username or password" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   if (!isPasswordValid) {
     return NextResponse.json(
       { error: "Invalid username or password" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -55,6 +55,6 @@ export async function POST(req: NextRequest) {
     {
       message: "Login successful",
     },
-    { status: 200, headers: { "Set-Cookie": serilized } }
+    { status: 200, headers: { "Set-Cookie": serilized } },
   );
 }

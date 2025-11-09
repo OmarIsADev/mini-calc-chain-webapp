@@ -35,7 +35,9 @@ export default function Navbar() {
           </>
         ) : (
           <NavigationMenuItem>
-            <Button variant="link" className="cursor-pointer" onClick={logout}>Logout</Button>
+            <Button variant="link" className="cursor-pointer" onClick={logout}>
+              Logout
+            </Button>
           </NavigationMenuItem>
         )}
       </NavigationMenuList>

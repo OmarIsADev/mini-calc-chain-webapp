@@ -26,7 +26,7 @@ export async function middleware(request: NextRequest) {
     try {
       const { payload } = (await jwtVerify(
         token,
-        new TextEncoder().encode(JWT_SECRET)
+        new TextEncoder().encode(JWT_SECRET),
       )) as { payload: { _id: string } };
 
       console.log("token verified");
@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
 
       return NextResponse.json(
         { error: "Token expired" },
-        { status: 401, headers: { "Set-Cookie": serilized } }
+        { status: 401, headers: { "Set-Cookie": serilized } },
       );
     }
   }

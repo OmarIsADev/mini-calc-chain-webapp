@@ -46,7 +46,7 @@ const operationSchema: Schema<IOperation> = new Schema<IOperation>(
     },
     operations: [{ type: Schema.Types.ObjectId, ref: "Operation" }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const chainSchema: Schema<IChain> = new Schema<IChain>(
@@ -62,7 +62,7 @@ const chainSchema: Schema<IChain> = new Schema<IChain>(
     },
     operations: [{ type: Schema.Types.ObjectId, ref: "Operation" }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Chain =

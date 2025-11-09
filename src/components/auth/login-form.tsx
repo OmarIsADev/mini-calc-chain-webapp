@@ -72,7 +72,9 @@ export default function LoginForm({
                 />
               </Field>
               {error && (
-                <p className="text-red-500 text-sm -mt-6 -mb-2 text-start">{error}</p>
+                <p className="text-red-500 text-sm -mt-6 -mb-2 text-start">
+                  {error}
+                </p>
               )}
               <Field>
                 <Button type="submit">Login</Button>

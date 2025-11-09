@@ -51,7 +51,13 @@ export default function Form() {
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <Field>
             <FieldLabel>Base</FieldLabel>
-            <Input name="base" type="number" step="0.01"  placeholder="Ex.g. 100" required />
+            <Input
+              name="base"
+              type="number"
+              step="0.01"
+              placeholder="Ex.g. 100"
+              required
+            />
           </Field>
           <Button type="submit">Create</Button>
         </form>

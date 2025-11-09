@@ -3,7 +3,10 @@ import { useState } from "react";
 const useAuth = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const login = async (username: string, password: string): Promise<boolean | { error: string }> => {
+  const login = async (
+    username: string,
+    password: string,
+  ): Promise<boolean | { error: string }> => {
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);

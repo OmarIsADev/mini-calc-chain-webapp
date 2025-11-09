@@ -5,7 +5,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import "@/models/User";
 
 async function deepPopulateOperations(
-  operations: Types.ObjectId[]
+  operations: Types.ObjectId[],
 ): Promise<IOperation[]> {
   if (!operations || operations.length === 0) {
     return [];
@@ -23,12 +23,12 @@ async function deepPopulateOperations(
 
       if (plainDoc.operations && plainDoc.operations.length > 0) {
         plainDoc.operations = await deepPopulateOperations(
-          plainDoc.operations as Types.ObjectId[]
+          plainDoc.operations as Types.ObjectId[],
         );
       }
 
       return plainDoc;
-    })
+    }),
   );
 
   return populatedDocs;
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
 
     if (plainChain.operations && plainChain.operations.length > 0) {
       plainChain.operations = await deepPopulateOperations(
-        plainChain.operations as Types.ObjectId[]
+        plainChain.operations as Types.ObjectId[],
       );
     }
 

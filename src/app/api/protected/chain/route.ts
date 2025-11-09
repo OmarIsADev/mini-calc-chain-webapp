@@ -41,7 +41,7 @@ export async function DELETE(req: NextRequest) {
   if (!chainId) {
     return NextResponse.json(
       { error: "Chain ID is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -54,7 +54,7 @@ export async function DELETE(req: NextRequest) {
   if (chain.author.toString() !== id) {
     return NextResponse.json(
       { error: "You are not the author of this chain" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
