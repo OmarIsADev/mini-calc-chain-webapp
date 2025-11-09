@@ -62,7 +62,8 @@ pnpm dev
 **2. Using `docker-compose`**
 
 ```bash
-docker-compose up
+docker compose up --build -d
+docker compose up
 ```
 
 This will start the Next.js development server and a MongoDB container.
