@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "src/lib/db.js"
+    "src/lib/db.ts"
   ],
   "exclude": ["node_modules"]
 }

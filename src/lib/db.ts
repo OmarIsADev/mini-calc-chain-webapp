@@ -1,11 +1,19 @@
-import mongoose from "mongoose";
+import mongoose, { type Connection } from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local",
+    "Please define the MONGODB_URI environment variable inside .env.local"
   );
+}
+
+declare global {
+  // biome-ignore lint/suspicious/noRedeclare: .
+  var mongoose: {
+    conn: Connection | null;
+    promise: Promise<typeof mongoose> | null;
+  };
 }
 
 let cached = global.mongoose;
@@ -20,11 +28,15 @@ async function connectMongoDB() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
+    // biome-ignore lint/style/noNonNullAssertion: .
+    cached.promise = mongoose.connect(MONGODB_URI!).then((mongoose) => {
       return mongoose;
-    });
+    }) as Promise<{
+      conn: Connection | null;
+      promise: Promise<typeof global.mongoose> | null;
+    }>;
 
-    const db = mongoose.connection;
+    const db: Connection = mongoose.connection;
 
     // Connection events
 
@@ -43,7 +55,7 @@ async function connectMongoDB() {
       console.log("⚠️ Mongoose disconnected from MongoDB.");
     });
   }
-  cached.conn = await cached.promise;
+  cached.conn = (await cached.promise) as unknown as Connection;
   return cached.conn;
 }
 
