@@ -2,6 +2,7 @@ import connectMongoDB from "@/lib/db";
 import { Chain, type IOperation, Operation } from "@/models/Chain";
 import type { Types } from "mongoose";
 import { type NextRequest, NextResponse } from "next/server";
+import "@/models/User";
 
 async function deepPopulateOperations(
   operations: Types.ObjectId[]
@@ -12,7 +13,9 @@ async function deepPopulateOperations(
 
   const docs = (await Operation.find({
     _id: { $in: operations },
-  }).populate("author").exec()) as IOperation[];
+  })
+    .populate("author")
+    .exec()) as IOperation[];
 
   const populatedDocs = await Promise.all(
     docs.map(async (doc) => {
