@@ -7,13 +7,18 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Field, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
+import { useState } from "react";
 
 export default function Form() {
   const { isLoggedIn } = useAuthStore();
   const { addChain } = useChainsStore();
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
 
     const formData = new FormData();
 
@@ -27,6 +32,8 @@ export default function Form() {
     if (response.ok) {
       addChain(await response.json());
     }
+
+    setIsSubmitting(false);
   };
 
   if (!isLoggedIn) {
@@ -43,7 +50,7 @@ export default function Form() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-center text-2xl font-mono font-medium">
+        <CardTitle className="text-center text-2xl font-mono font-medium">setIsReplying(true)
           Start a new chain
         </CardTitle>
       </CardHeader>
@@ -59,7 +66,7 @@ export default function Form() {
               required
             />
           </Field>
-          <Button type="submit">Create</Button>
+          <Button type="submit" disabled={isSubmitting}>Create</Button>
         </form>
       </CardContent>
     </Card>

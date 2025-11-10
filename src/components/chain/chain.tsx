@@ -15,7 +15,7 @@ import {
 } from "../ui/dropdown-menu";
 import useAuthStore from "@/store/auth";
 import { useRouter } from "next/navigation";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export default function Chain({ chain }: { chain: IPopulatedChain }) {
   const router = useRouter();
