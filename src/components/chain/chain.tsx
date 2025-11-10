@@ -14,14 +14,18 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import useAuthStore from "@/store/auth";
+import { useRouter } from "next/navigation";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export default function Chain({ chain }: { chain: IPopulatedChain }) {
+  const router = useRouter();
+
   const { appendOperation, removeOperation, removeChain } = useChainsStore();
   const { userData } = useAuthStore();
 
   const handleAddOperation = async (
     e: React.FormEvent<HTMLFormElement>,
-    parentOperationId: string = "",
+    parentOperationId: string = ""
   ): Promise<boolean> => {
     e.preventDefault();
     e.stopPropagation();
@@ -57,6 +61,9 @@ export default function Chain({ chain }: { chain: IPopulatedChain }) {
 
       formElement.reset();
       return true;
+    } else if (response.status === 401) {
+      router.push("/login");
+      return false;
     }
 
     return false;
@@ -112,6 +119,7 @@ export default function Chain({ chain }: { chain: IPopulatedChain }) {
             parentOperationId={operation._id}
             handleAddOperation={handleAddOperation}
             removeOperation={removeOperation}
+            router={router}
           />
         ))}
 
@@ -137,15 +145,17 @@ const Opperation = ({
   chainId,
   handleAddOperation,
   removeOperation,
+  router,
 }: {
   operation: IPopulatedOperation;
   lastValue: number;
   _id?: string;
   parentOperationId?: string;
   chainId: string;
+  router: AppRouterInstance;
   handleAddOperation: (
     e: React.FormEvent<HTMLFormElement>,
-    parentOpperationId: string,
+    parentOpperationId: string
   ) => Promise<boolean>;
   removeOperation: (operationId: string, chainId: string) => void;
 }) => {
@@ -158,7 +168,7 @@ const Opperation = ({
       `/api/protected/operation?id=${operation._id}`,
       {
         method: "DELETE",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -221,7 +231,9 @@ const Opperation = ({
       ) : (
         <Button
           variant="link"
-          onClick={() => setIsReplying(true)}
+          onClick={() => {
+            _id ? setIsReplying(true) : router.push("/login");
+          }}
           className="p-0 text-gray-500"
         >
           Reply
@@ -237,6 +249,7 @@ const Opperation = ({
           lastValue={val}
           key={op._id}
           operation={op}
+          router={router}
         />
       ))}
     </div>
