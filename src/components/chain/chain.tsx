@@ -25,7 +25,7 @@ export default function Chain({ chain }: { chain: IPopulatedChain }) {
 
   const handleAddOperation = async (
     e: React.FormEvent<HTMLFormElement>,
-    parentOperationId: string = ""
+    parentOperationId: string = "",
   ): Promise<boolean> => {
     e.preventDefault();
     e.stopPropagation();
@@ -85,7 +85,10 @@ export default function Chain({ chain }: { chain: IPopulatedChain }) {
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
-          <p>{chain.author.username}</p>
+          <div className="flex flex-col gap-2 items-start justify-center">
+            <p>{chain.author.username}</p>
+            <p className="text-md">{chain.base}</p>
+          </div>
           <div className="flex flex-col gap-2 items-end justify-center">
             <DropdownMenu>
               <DropdownMenuTrigger className="w-min cursor-pointer">
@@ -106,7 +109,6 @@ export default function Chain({ chain }: { chain: IPopulatedChain }) {
             </p>
           </div>
         </div>
-        <p className="text-md">{chain.base}</p>
       </CardHeader>
       <CardContent>
         {chain.operations.map((operation) => (
@@ -155,7 +157,7 @@ const Opperation = ({
   router: AppRouterInstance;
   handleAddOperation: (
     e: React.FormEvent<HTMLFormElement>,
-    parentOpperationId: string
+    parentOpperationId: string,
   ) => Promise<boolean>;
   removeOperation: (operationId: string, chainId: string) => void;
 }) => {
@@ -168,7 +170,7 @@ const Opperation = ({
       `/api/protected/operation?id=${operation._id}`,
       {
         method: "DELETE",
-      }
+      },
     );
 
     if (!response.ok) {
